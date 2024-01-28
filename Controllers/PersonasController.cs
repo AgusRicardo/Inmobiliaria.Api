@@ -1,5 +1,6 @@
 ﻿using Inmobiliaria.Models;
 using Inmobiliaria.Request;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,10 +16,11 @@ namespace Inmobiliaria.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [Authorize]
         public async Task<ActionResult> GetPersonas()
         {
             try
-            {   
+            {
                 var personas = await _context.Personas.ToListAsync();
                 return Ok(personas);
             }
