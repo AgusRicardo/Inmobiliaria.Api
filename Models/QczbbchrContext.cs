@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace Inmobiliaria.Models;
 
@@ -18,10 +20,23 @@ public partial class QczbbchrContext : DbContext
         _configuration = configuration;
     }
 
-    public virtual DbSet<Gasto> Gastos { get; set; }
+    public virtual DbSet<Usuario> Usuarios { get; set; }
+    public virtual DbSet<Propietario> Propietarios { get; set; }
+    public virtual DbSet<Propiedad> Propiedades { get; set; }
+    public virtual DbSet<Inquilino> Inquilinos { get; set; }
+    public virtual DbSet<Contrato> Contratos { get; set; }
+    public virtual DbSet<Garante> Garantes { get; set; }
 
-    public virtual DbSet<Persona> Personas { get; set; }
-
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Propietario>().ToTable("Propietarios");
+        modelBuilder.Entity<Propiedad>().ToTable("Propiedades");
+        modelBuilder.Entity<Inquilino>().ToTable("Inquilinos");
+        modelBuilder.Entity<Contrato>().ToTable("Contratos");
+        modelBuilder.Entity<Garante>().ToTable("Garantes");
+    }
+}
+/*
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
@@ -47,27 +62,6 @@ public partial class QczbbchrContext : DbContext
             .HasPostgresExtension("uuid-ossp")
             .HasPostgresExtension("xml2");
 
-        modelBuilder.Entity<Gasto>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("gastos_pkey");
-
-            entity.ToTable("gastos");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Descripcion)
-                .HasMaxLength(255)
-                .HasColumnName("descripcion");
-            entity.Property(e => e.Estado)
-                .HasMaxLength(50)
-                .HasColumnName("estado");
-            entity.Property(e => e.Fecha)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("fecha");
-            entity.Property(e => e.Nombre)
-                .HasMaxLength(255)
-                .HasColumnName("nombre");
-        });
-
         modelBuilder.Entity<Persona>(entity =>
         {
             entity.HasKey(e => e.PersonaId).HasName("personas_pkey");
@@ -86,8 +80,27 @@ public partial class QczbbchrContext : DbContext
                 .HasColumnName("nombre");
         });
 
+        modelBuilder.Entity<Usuario>(entity =>
+        {
+            entity.HasKey(e => e.User_id).HasName("usuarios_pkey");
+
+            entity.ToTable("usuarios");
+
+            entity.Property(e => e.User_id).HasColumnName("user_id");
+            entity.Property(e => e.Email)
+                .HasMaxLength(50)
+                .HasColumnName("email");
+            entity.Property(e => e.Password)
+                .HasMaxLength(50)
+                .HasColumnName("password");
+            entity.Property(e => e.Rol)
+                .HasMaxLength(50)
+                .HasColumnName("rol");
+        });
+
         OnModelCreatingPartial(modelBuilder);
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
+*/

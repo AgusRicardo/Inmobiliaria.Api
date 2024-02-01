@@ -6,23 +6,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Inmobiliaria.Controllers
 {
-    public class PersonasController : ApiController
+    public class PropietariosController : ApiController
     {
-        public PersonasController(QczbbchrContext context) : base(context)
+        public PropietariosController(QczbbchrContext context) : base(context)
         {
         }
-
-        [HttpGet("GetPersonas")]
+        [HttpGet("GetPropietarios")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize]
-        public async Task<ActionResult> GetPersonas()
+        public async Task<ActionResult> GetPropietarios()
         {
             try
             {
-                var personas = await _context.Personas.ToListAsync();
-                return Ok(personas);
+                var propietarios = await _context.Propietarios.ToListAsync();
+                return Ok(propietarios);
             }
             catch (Exception ex)
             {
@@ -30,23 +29,24 @@ namespace Inmobiliaria.Controllers
             }
         }
 
-        [HttpGet("GetPersonaById/{personaId}")]
+        [HttpGet("GetPropietarioById/{id_propietario}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult> GetPersonaById(int personaId)
+        [Authorize]
+        public async Task<ActionResult> GetPropietarioById(int id_propietario)
         {
             try
             {
-                var persona = await _context.Personas.FindAsync(personaId);
+                var propietario = await _context.Propietarios.FindAsync(id_propietario);
 
-                if (persona == null)
+                if (propietario == null)
                 {
-                    var errorMessage = new { message = $"No se encontró ninguna persona con ID {personaId}" };
+                    var errorMessage = new { message = $"No se encontró ningun propietario con ID {id_propietario}" };
                     return NotFound(errorMessage);
                 }
 
-                return Ok(persona);
+                return Ok(propietario);
             }
             catch (Exception ex)
             {
@@ -54,11 +54,12 @@ namespace Inmobiliaria.Controllers
             }
         }
 
-        [HttpPost("CrearPersona")]
+        [HttpPost("CrearPropietario")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult> CrearPersona([FromBody] CrearPersonaRequest nuevaPersonaRequest)
+        [Authorize]
+        public async Task<ActionResult> CrearPropietario([FromBody] CrearPropietarioRequest nuevoPropietarioRequest)
         {
             try
             {
@@ -67,19 +68,20 @@ namespace Inmobiliaria.Controllers
                     return BadRequest(ModelState);
                 }
 
-                var nuevaPersona = new Persona
+                var nuevoPropietario = new Propietario
                 {
-                    Nombre = nuevaPersonaRequest.Nombre,
-                    Apellido = nuevaPersonaRequest.Apellido,
-                    Dni = nuevaPersonaRequest.Dni
+                    nombre = nuevoPropietarioRequest.nombre,
+                    apellido = nuevoPropietarioRequest.apellido,
+                    dni = nuevoPropietarioRequest.dni,
+                    fecha_alta = DateOnly.FromDateTime(DateTime.Now)
                 };
 
-                _context.Personas.Add(nuevaPersona);
+                _context.Propietarios.Add(nuevoPropietario);
                 await _context.SaveChangesAsync();
 
-                var successMessage = $"Se ha creado una nueva persona exitosamente";
+                var successMessage = $"Se ha creado un nuevo propietario exitosamente";
 
-                return Ok(new { Message = successMessage, PersonaId = nuevaPersona.PersonaId });
+                return Ok(new { Message = successMessage, PersonaId = nuevoPropietario.id_propietario });
             }
             catch (Exception ex)
             {
@@ -87,27 +89,28 @@ namespace Inmobiliaria.Controllers
             }
         }
 
-        [HttpDelete("EliminarPersona/{personaId}")]
+        [HttpDelete("EliminarPropietario/{id_propietario}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> EliminarPersona(int personaId)
+        [Authorize]
+        public async Task<ActionResult> EliminarPropietario(int id_propietario)
         {
             try
             {
-                var persona = await _context.Personas.FindAsync(personaId);
+                var propietario = await _context.Propietarios.FindAsync(id_propietario);
 
-                if (persona == null)
+                if (propietario == null)
                 {
-                    var errorMessage = new { StatusCode = 404, message = $"No se encontró ninguna persona con ID {personaId}" };
+                    var errorMessage = new { StatusCode = 404, message = $"No se encontró ningun propietario con ID {id_propietario}" };
                     return NotFound(errorMessage);
                 }
 
-                _context.Personas.Remove(persona);
+                _context.Propietarios.Remove(propietario);
                 await _context.SaveChangesAsync();
 
-                var successMessage = $"Se ha eliminado la persona con ID {personaId} exitosamente";
+                var successMessage = $"Se ha eliminado el propietario con ID {id_propietario} exitosamente";
                 return Ok(new { StatusCode = 200, Message = successMessage });
             }
             catch (Exception ex)
@@ -116,49 +119,48 @@ namespace Inmobiliaria.Controllers
             }
         }
 
-        [HttpPut("EditarPersona/{personaId}")]
+        [HttpPut("EditarPersona/{id_propietario}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> EditarPersona(int personaId, [FromBody] EditarPersonaRequest editarPersonaRequest)
+        [Authorize]
+        public async Task<ActionResult> EditarPersona(int id_propietario, [FromBody] EditarPropietarioRequest editarPropietarioRequest)
         {
             try
             {
-                var persona = await _context.Personas.FindAsync(personaId);
+                var propietario = await _context.Propietarios.FindAsync(id_propietario);
 
-                if (persona == null)
+                if (propietario == null)
                 {
-                    var errorMessage = new {statusCode = 404, message = $"No se encontró ninguna persona con ID {personaId}" };
+                    var errorMessage = new { statusCode = 404, message = $"No se encontró nigun propietario con ID {id_propietario}" };
                     return NotFound(errorMessage);
                 }
 
-                if (!string.IsNullOrEmpty(editarPersonaRequest.Nombre))
+                if (!string.IsNullOrEmpty(editarPropietarioRequest.nombre))
                 {
-                    persona.Nombre = editarPersonaRequest.Nombre;
+                    propietario.nombre = editarPropietarioRequest.nombre;
                 }
 
-                if (!string.IsNullOrEmpty(editarPersonaRequest.Apellido))
+                if (!string.IsNullOrEmpty(editarPropietarioRequest.apellido))
                 {
-                    persona.Apellido = editarPersonaRequest.Apellido;
+                    propietario.apellido = editarPropietarioRequest.apellido;
                 }
 
-                if (!string.IsNullOrEmpty(editarPersonaRequest.Dni))
+                if (!string.IsNullOrEmpty(editarPropietarioRequest.dni))
                 {
-                    persona.Dni = editarPersonaRequest.Dni;
+                    propietario.dni = editarPropietarioRequest.dni;
                 }
 
                 await _context.SaveChangesAsync();
 
-                var successMessage = $"Se ha editado la persona con ID {personaId} exitosamente";
-                return Ok(new { statusCode = 200, PersonaId = persona.PersonaId, Message = successMessage });
+                var successMessage = $"Se ha editado el propietario con ID {id_propietario} exitosamente";
+                return Ok(new { statusCode = 200, PropietarioId = propietario.id_propietario, Message = successMessage });
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error interno del servidor");
             }
         }
-
-
     }
 }

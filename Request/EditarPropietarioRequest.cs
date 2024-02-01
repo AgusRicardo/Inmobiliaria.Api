@@ -2,15 +2,15 @@
 
 namespace Inmobiliaria.Request
 {
-    public class CrearPersonaRequest
+    public class EditarPropietarioRequest
     {
         [StringLength(50)]
-        public string? Nombre { get; set; }
+        public string nombre { get; set; }
 
         [StringLength(50)]
-        public string? Apellido { get; set; }
+        public string apellido { get; set; }
 
         [StringLength(20)]
-        public string? Dni { get; set; }
+        public string dni { get; set; }
     }
 }
