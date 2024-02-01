@@ -96,7 +96,8 @@ namespace Inmobiliaria
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
                 c.RoutePrefix = string.Empty;
             });
-
+            app.UseSwagger();
+            app.UseSwaggerUI();
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();
