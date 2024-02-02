@@ -1,4 +1,4 @@
-<h3>Proyecto desarrollado para aprender y demostrar lo aprendido con .NET 8 y Angular 17</h3>
+<h3>Proyecto desarrollado para aprender y poner en práctica lo aprendido con .NET 8 y Angular 17</h3>
 
 # <h2>DER</h2>
 ![](Assets/DER.png)
