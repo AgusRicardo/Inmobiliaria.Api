@@ -14,5 +14,7 @@ namespace Inmobiliaria.Models
         public string tipo { get; set; }
         public string direccion { get; set; }
         public DateOnly fecha_alta { get; set; }
+
+        //public virtual ICollection<Propietario> Propietarios { get; set; }
     }
 }

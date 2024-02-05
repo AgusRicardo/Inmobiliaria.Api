@@ -29,24 +29,30 @@ namespace Inmobiliaria.Controllers
             }
         }
 
-        [HttpGet("GetPropietarioById/{id_propietario}")]
+        [HttpGet("GetPropietarios/Propietario")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize]
-        public async Task<ActionResult> GetPropietarioById(int id_propietario)
+        public async Task<ActionResult> GetPropietarioById([FromQuery] string searchTerm)
         {
             try
             {
-                var propietario = await _context.Propietarios.FindAsync(id_propietario);
+                string searchTermLower = searchTerm.ToLower();
+                var propietarios = await _context.Propietarios
+                    .Where(p =>
+                        EF.Functions.Like(p.nombre.ToLower(), $"%{searchTermLower}%") ||
+                        EF.Functions.Like(p.apellido.ToLower(), $"%{searchTermLower}%") ||
+                        EF.Functions.Like(p.dni.ToLower(), $"%{searchTermLower}%"))
+                    .ToListAsync();
 
-                if (propietario == null)
+                if (propietarios.Count == 0)
                 {
-                    var errorMessage = new { message = $"No se encontró ningun propietario con ID {id_propietario}" };
+                    var errorMessage = new { message = $"No se encontraron propietarios con el término de búsqueda '{searchTermLower}'" };
                     return NotFound(errorMessage);
                 }
 
-                return Ok(propietario);
+                return Ok(propietarios);
             }
             catch (Exception ex)
             {

@@ -13,7 +13,7 @@ namespace Inmobiliaria.Models
         public string dni { get; set; }
         public DateOnly fecha_alta { get; set; }
 
-        public virtual ICollection<Propiedad> Propiedad { get; set; }
+        public virtual ICollection<Propiedad> Propiedades { get; set; }
 
     }
 }

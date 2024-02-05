@@ -22,7 +22,50 @@ namespace Inmobiliaria.Controllers
         {
             try
             {
-                var contratos = await _context.Contratos.ToListAsync();
+                var contratos = await _context.Contratos
+                    .Include(c => c.Propietario)
+                    .Include(c => c.Propiedad)
+                    .Include(c => c.Inquilino)
+                    .Include(c => c.Garante)
+                    .Include(c => c.Estado)
+                    .Select(c => new
+                    {
+                        c.id_contrato,
+                        Propietario = new
+                        {
+                            c.Propietario.id_propietario,
+                            c.Propietario.nombre,
+                            c.Propietario.apellido
+                        },
+                        Propiedad = new
+                        {
+                            c.Propiedad.id_propiedad,
+                            c.Propiedad.tipo,
+                            c.Propiedad.direccion
+                        },
+                        Inquilino = new
+                        {
+                            c.Inquilino.id_inquilino,
+                            c.Inquilino.nombre,
+                            c.Inquilino.apellido
+                        },
+                        Garante = new
+                        {
+                            c.Garante.id_garante,
+                            c.Garante.nombre,
+                            c.Garante.apellido
+                        },
+                        c.fecha_inicio,
+                        c.fecha_fin,
+                        c.monto,
+                        Estado = new
+                        {
+                            c.Estado.id_estado,
+                            c.Estado.descripcion
+                        },
+                        c.fecha_alta
+                    })
+                    .ToListAsync();
                 return Ok(contratos);
             }
             catch (Exception ex)

@@ -23,6 +23,9 @@ namespace Inmobiliaria.Models
         public DateOnly fecha_inicio { get; set; }
         public DateOnly fecha_fin { get; set; }
         public decimal monto { get; set; }
+        public int id_estado { get; set; }
+        [ForeignKey("id_estado")]
+        public virtual Estados Estado { get; set; }
         public DateOnly fecha_alta { get; set; }
     }
 }

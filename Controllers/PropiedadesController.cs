@@ -21,7 +21,21 @@ namespace Inmobiliaria.Controllers
         {
             try
             {
-                var propiedades = await _context.Propiedades.ToListAsync();
+                var propiedades = await _context.Propiedades
+                    .Include(c => c.Propietario)
+                    .Select(c => new
+                    {
+                        c.id_propiedad,
+                        Propietario = new
+                        {
+                            c.Propietario.id_propietario,
+                            c.Propietario.nombre,
+                            c.Propietario.apellido
+                        },
+                        c.tipo,
+                        c.direccion,
+                        c.fecha_alta
+                    }).ToListAsync();
                 return Ok(propiedades);
             }
             catch (Exception ex)
