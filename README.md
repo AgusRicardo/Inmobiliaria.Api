@@ -1,4 +1,8 @@
-<h2>DER</h2>
-<div>
-![image](https://github.com/AgusRicardo/Inmobiliaria/assets/72091118/de10d456-03cb-402a-9ebf-81a1a11c255a)
-</div>
+<h3>Proyecto desarrollado para aprender y poner en práctica lo aprendido con .NET 8 y Angular 17</h3>
+
+# <h2>DER</h2>
+![](Assets/DER.png)
+
+<div>Inmobiliaria.Api: https://api-inmobiliaria.azurewebsites.net/index.html</div>
+<div>Inmobiliaria.Web: https://github.com/AgusRicardo/Inmobiliaria.Web</div>
+<div>Base de datos: https://www.elephantsql.com/</div>
