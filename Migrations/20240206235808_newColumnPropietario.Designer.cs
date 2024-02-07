@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Inmobiliaria.Migrations
 {
     [DbContext(typeof(QczbbchrContext))]
-    [Migration("20240205192047_NuevaMigracion")]
-    partial class NuevaMigracion
+    [Migration("20240206235808_newColumnPropietario")]
+    partial class newColumnPropietario
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -124,6 +124,29 @@ namespace Inmobiliaria.Migrations
                     b.ToTable("Garantes", (string)null);
                 });
 
+            modelBuilder.Entity("Inmobiliaria.Models.Inmobiliarias", b =>
+                {
+                    b.Property<int>("inmobiliaria_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("inmobiliaria_id"));
+
+                    b.Property<string>("direccion")
+                        .HasColumnType("text");
+
+                    b.Property<string>("email")
+                        .HasColumnType("text");
+
+                    b.Property<string>("nombre")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("inmobiliaria_id");
+
+                    b.ToTable("Inmobiliaria", (string)null);
+                });
+
             modelBuilder.Entity("Inmobiliaria.Models.Inquilino", b =>
                 {
                     b.Property<int>("id_inquilino")
@@ -189,9 +212,6 @@ namespace Inmobiliaria.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id_propietario"));
 
-                    b.Property<int?>("Propiedadid_propiedad")
-                        .HasColumnType("integer");
-
                     b.Property<string>("apellido")
                         .IsRequired()
                         .HasColumnType("text");
@@ -203,15 +223,35 @@ namespace Inmobiliaria.Migrations
                     b.Property<DateOnly>("fecha_alta")
                         .HasColumnType("date");
 
+                    b.Property<int>("inmobiliaria_id")
+                        .HasColumnType("integer");
+
                     b.Property<string>("nombre")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("id_propietario");
 
-                    b.HasIndex("Propiedadid_propiedad");
+                    b.HasIndex("inmobiliaria_id");
 
                     b.ToTable("Propietarios", (string)null);
+                });
+
+            modelBuilder.Entity("Inmobiliaria.Models.Roles", b =>
+                {
+                    b.Property<int>("id_rol")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id_rol"));
+
+                    b.Property<string>("descripcion")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("id_rol");
+
+                    b.ToTable("Rol", (string)null);
                 });
 
             modelBuilder.Entity("Inmobiliaria.Models.Usuario", b =>
@@ -230,10 +270,17 @@ namespace Inmobiliaria.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Rol")
-                        .HasColumnType("text");
+                    b.Property<int>("id_rol")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("inmobiliaria_id")
+                        .HasColumnType("integer");
 
                     b.HasKey("User_id");
+
+                    b.HasIndex("id_rol");
+
+                    b.HasIndex("inmobiliaria_id");
 
                     b.ToTable("Usuarios");
                 });
@@ -284,7 +331,7 @@ namespace Inmobiliaria.Migrations
             modelBuilder.Entity("Inmobiliaria.Models.Propiedad", b =>
                 {
                     b.HasOne("Inmobiliaria.Models.Propietario", "Propietario")
-                        .WithMany()
+                        .WithMany("Propiedades")
                         .HasForeignKey("id_propietario")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -294,9 +341,32 @@ namespace Inmobiliaria.Migrations
 
             modelBuilder.Entity("Inmobiliaria.Models.Propietario", b =>
                 {
-                    b.HasOne("Inmobiliaria.Models.Propiedad", null)
-                        .WithMany("Propietarios")
-                        .HasForeignKey("Propiedadid_propiedad");
+                    b.HasOne("Inmobiliaria.Models.Inmobiliarias", "Inmobiliaria")
+                        .WithMany()
+                        .HasForeignKey("inmobiliaria_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Inmobiliaria");
+                });
+
+            modelBuilder.Entity("Inmobiliaria.Models.Usuario", b =>
+                {
+                    b.HasOne("Inmobiliaria.Models.Roles", "Rol")
+                        .WithMany()
+                        .HasForeignKey("id_rol")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Inmobiliaria.Models.Inmobiliarias", "Inmobiliaria")
+                        .WithMany()
+                        .HasForeignKey("inmobiliaria_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Inmobiliaria");
+
+                    b.Navigation("Rol");
                 });
 
             modelBuilder.Entity("Inmobiliaria.Models.Garante", b =>
@@ -309,9 +379,9 @@ namespace Inmobiliaria.Migrations
                     b.Navigation("Contrato");
                 });
 
-            modelBuilder.Entity("Inmobiliaria.Models.Propiedad", b =>
+            modelBuilder.Entity("Inmobiliaria.Models.Propietario", b =>
                 {
-                    b.Navigation("Propietarios");
+                    b.Navigation("Propiedades");
                 });
 #pragma warning restore 612, 618
         }

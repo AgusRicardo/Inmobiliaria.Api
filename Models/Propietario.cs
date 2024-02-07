@@ -12,6 +12,9 @@ namespace Inmobiliaria.Models
         public string apellido { get; set; }
         public string dni { get; set; }
         public DateOnly fecha_alta { get; set; }
+        public int inmobiliaria_id { get; set; }
+        [ForeignKey("inmobiliaria_id")]
+        public virtual Inmobiliarias Inmobiliaria { get; set; }
 
         public virtual ICollection<Propiedad> Propiedades { get; set; }
 

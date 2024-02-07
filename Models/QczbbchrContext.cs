@@ -27,6 +27,9 @@ public partial class QczbbchrContext : DbContext
     public virtual DbSet<Contrato> Contratos { get; set; }
     public virtual DbSet<Garante> Garantes { get; set; }
     public virtual DbSet<Estados> Estados { get; set; }
+    public virtual DbSet<Inmobiliarias> Inmobiliaria { get; set; }
+    public virtual DbSet<Roles> Rol{ get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -36,5 +39,7 @@ public partial class QczbbchrContext : DbContext
         modelBuilder.Entity<Contrato>().ToTable("Contratos");
         modelBuilder.Entity<Garante>().ToTable("Garantes");
         modelBuilder.Entity<Estados>().ToTable("Estados");
+        modelBuilder.Entity<Inmobiliarias>().ToTable("Inmobiliaria");
+        modelBuilder.Entity<Roles>().ToTable("Rol");
     }
 }

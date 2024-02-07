@@ -38,7 +38,8 @@ public class UsuarioController : ApiController
                 {
                     new Claim("user_id", usuarioEntity.User_id.ToString()),
                     new Claim("mail", usuarioEntity.Email),
-                    new Claim("rol", usuarioEntity.Rol),
+                    new Claim("rol", usuarioEntity.id_rol),
+                    new Claim("inmobiliaria_id", usuarioEntity.inmobiliaria_id.ToString())
                     // Podría almacenar mas datos en el token
                 };
 
