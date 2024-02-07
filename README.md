@@ -1,7 +1,7 @@
 <h3>Proyecto desarrollado para aprender y poner en práctica lo aprendido con .NET 8 y Angular 17</h3>
 
 # <h2>DER</h2>
-![](Assets/DER.png)
+![](Assets/DER2.0.png)
 
 <div>Inmobiliaria.Api: https://api-inmobiliaria.azurewebsites.net/index.html</div>
 <div>Inmobiliaria.Web: https://github.com/AgusRicardo/Inmobiliaria.Web</div>
