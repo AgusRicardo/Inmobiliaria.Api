@@ -125,13 +125,13 @@ namespace Inmobiliaria.Controllers
             }
         }
 
-        [HttpPut("EditarPersona/{id_propietario}")]
+        [HttpPut("EditarPropietario/{id_propietario}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize]
-        public async Task<ActionResult> EditarPersona(int id_propietario, [FromBody] EditarPropietarioRequest editarPropietarioRequest)
+        public async Task<ActionResult> EditarPropietario(int id_propietario, [FromBody] EditarPropietarioRequest editarPropietarioRequest)
         {
             try
             {
