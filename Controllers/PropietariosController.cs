@@ -79,6 +79,7 @@ namespace Inmobiliaria.Controllers
                     nombre = nuevoPropietarioRequest.nombre,
                     apellido = nuevoPropietarioRequest.apellido,
                     dni = nuevoPropietarioRequest.dni,
+                    inmobiliaria_id = nuevoPropietarioRequest.inmobiliaria_id,
                     fecha_alta = DateOnly.FromDateTime(DateTime.Now)
                 };
 

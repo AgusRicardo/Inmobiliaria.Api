@@ -12,6 +12,7 @@ namespace Inmobiliaria.Request
 
         [StringLength(20)]
         public string dni { get; set; }
+        public int inmobiliaria_id { get; set; }
 
         public DateOnly fecha_alta { get; set; }
     }
