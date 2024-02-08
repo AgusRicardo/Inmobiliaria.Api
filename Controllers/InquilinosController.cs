@@ -21,7 +21,7 @@ namespace Inmobiliaria.Controllers
         {
             try
             {
-                var inquilinos = await _context.Inquilinos.ToListAsync();
+                var inquilinos = await _context.Inquilinos.OrderByDescending(p => p.id_inquilino).ToListAsync();
                 return Ok(inquilinos);
             }
             catch (Exception ex)

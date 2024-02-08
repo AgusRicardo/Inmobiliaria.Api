@@ -20,7 +20,7 @@ namespace Inmobiliaria.Controllers
         {
             try
             {
-                var propietarios = await _context.Propietarios.ToListAsync();
+                var propietarios = await _context.Propietarios.OrderByDescending(p => p.id_propietario).ToListAsync();
                 return Ok(propietarios);
             }
             catch (Exception ex)

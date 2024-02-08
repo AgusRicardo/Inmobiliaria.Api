@@ -35,7 +35,7 @@ namespace Inmobiliaria.Controllers
                         c.tipo,
                         c.direccion,
                         c.fecha_alta
-                    }).ToListAsync();
+                    }).OrderByDescending(p => p.id_propiedad).ToListAsync();
                 return Ok(propiedades);
             }
             catch (Exception ex)

@@ -28,7 +28,10 @@ public class UsuarioController : ApiController
             string email = optData.Email;
             string password = optData.Password;
 
-            Usuario usuarioEntity = _context.Usuarios.FirstOrDefault(x => x.Email.ToLower() == email.ToLower() && x.Password == password);
+            //Usuario usuarioEntity = _context.Usuarios.FirstOrDefault(x => x.Email.ToLower() == email.ToLower() && x.Password == password);
+            Usuario usuarioEntity = _context.Usuarios
+            .Include(u => u.Inmobiliaria) // Incluir la relación con la inmobiliaria
+            .FirstOrDefault(x => x.Email.ToLower() == email.ToLower() && x.Password == password);
 
             if (usuarioEntity != null)
             {
@@ -39,7 +42,10 @@ public class UsuarioController : ApiController
                     new Claim("user_id", usuarioEntity.User_id.ToString()),
                     new Claim("mail", usuarioEntity.Email),
                     new Claim("rol", usuarioEntity.id_rol),
-                    new Claim("inmobiliaria_id", usuarioEntity.inmobiliaria_id.ToString())
+                    new Claim("inmobiliaria_id", usuarioEntity.inmobiliaria_id.ToString()),
+                    new Claim("inmobiliaria_nombre", usuarioEntity.Inmobiliaria.nombre),
+                    new Claim("inmobiliaria_email", usuarioEntity.Inmobiliaria.email),
+                    new Claim("inmobiliaria_direccion", usuarioEntity.Inmobiliaria.direccion)
                     // Podría almacenar mas datos en el token
                 };
 

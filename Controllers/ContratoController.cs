@@ -65,7 +65,7 @@ namespace Inmobiliaria.Controllers
                         },
                         c.fecha_alta
                     })
-                    .ToListAsync();
+                    .OrderByDescending(p => p.id_contrato).ToListAsync();
                 return Ok(contratos);
             }
             catch (Exception ex)
