@@ -1,5 +1,6 @@
 ﻿using Inmobiliaria.Models;
 using Inmobiliaria.Request;
+using Inmobiliaria.services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,8 +10,10 @@ namespace Inmobiliaria.Controllers
 {
     public class PropiedadesController : ApiController
     {
-        public PropiedadesController(QczbbchrContext context) : base(context)
+        private readonly ITokenService _tokenService;
+        public PropiedadesController(QczbbchrContext context, ITokenService tokenService) : base(context)
         {
+            _tokenService = tokenService;
         }
         [HttpGet("GetPropiedades")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -21,8 +24,26 @@ namespace Inmobiliaria.Controllers
         {
             try
             {
+                var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+                var jsonToken = _tokenService.DecodeToken(token);
+
+                var claimValue = jsonToken.Claims.ElementAt(3).Value; 
+
+                var propietarios = await _context.Propietarios
+                    .Where(p => p.inmobiliaria_id == int.Parse(claimValue))
+                    .OrderByDescending(p => p.id_propietario)
+                    .ToListAsync();
+
+                if (propietarios == null || propietarios.Count == 0)
+                {
+                    return NotFound(new { statusCode = StatusCodes.Status200OK, message = "No hay propietarios disponibles." });
+                }
+
+                var propietariosIds = propietarios.Select(p => p.id_propietario).ToList();
+
                 var propiedades = await _context.Propiedades
                     .Include(c => c.Propietario)
+                    .Where(c => propietariosIds.Contains(c.id_propietario))
                     .Select(c => new
                     {
                         c.id_propiedad,
@@ -36,6 +57,12 @@ namespace Inmobiliaria.Controllers
                         c.direccion,
                         c.fecha_alta
                     }).OrderByDescending(p => p.id_propiedad).ToListAsync();
+
+                if (propiedades == null || propiedades.Count == 0)
+                {
+                    return NotFound(new { statusCode = StatusCodes.Status200OK, message = "No hay propiedades disponibles." });
+                }
+
                 return Ok(propiedades);
             }
             catch (Exception ex)

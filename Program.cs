@@ -1,4 +1,5 @@
 using Inmobiliaria.Models;
+using Inmobiliaria.services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +19,8 @@ namespace Inmobiliaria
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddAuthorization();
+
+            builder.Services.AddScoped<ITokenService, TokenService>();
 
             // Configuración de la base de datos para PostgreSQL
             builder.Services.AddDbContext<QczbbchrContext>(options =>
