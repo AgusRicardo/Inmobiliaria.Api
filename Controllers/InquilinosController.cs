@@ -22,6 +22,11 @@ namespace Inmobiliaria.Controllers
             try
             {
                 var inquilinos = await _context.Inquilinos.OrderByDescending(p => p.id_inquilino).ToListAsync();
+
+                if (inquilinos == null || inquilinos.Count == 0)
+                {
+                    return NotFound(new { statusCode = StatusCodes.Status200OK, message = "No hay inquilinos disponibles."});
+                }
                 return Ok(inquilinos);
             }
             catch (Exception ex)

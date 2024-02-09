@@ -1,15 +1,20 @@
 ﻿using Inmobiliaria.Models;
 using Inmobiliaria.Request;
+using Inmobiliaria.services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Inmobiliaria.Controllers
 {
     public class PropietariosController : ApiController
     {
-        public PropietariosController(QczbbchrContext context) : base(context)
+        private readonly ITokenService _tokenService;
+        public PropietariosController(QczbbchrContext context, ITokenService tokenService) : base(context)
         {
+            _tokenService = tokenService;
         }
         [HttpGet("GetPropietarios")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -18,9 +23,23 @@ namespace Inmobiliaria.Controllers
         [Authorize]
         public async Task<ActionResult> GetPropietarios()
         {
-            try
-            {
-                var propietarios = await _context.Propietarios.OrderByDescending(p => p.id_propietario).ToListAsync();
+            try 
+            {    
+                var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+                var jsonToken = _tokenService.DecodeToken(token);
+
+                var claimValue = jsonToken.Claims.ElementAt(3).Value; // La inmobiliaria a la que pertenece el usuario
+
+                var propietarios = await _context.Propietarios
+                    .Where(p => p.inmobiliaria_id == int.Parse(claimValue))
+                    .OrderByDescending(p => p.id_propietario)
+                    .ToListAsync();
+
+                if (propietarios == null || propietarios.Count == 0)
+                {
+                    return NotFound(new { statusCode = StatusCodes.Status200OK, message = "No hay propietarios disponibles." });
+                }
+
                 return Ok(propietarios);
             }
             catch (Exception ex)

@@ -22,6 +22,12 @@ namespace Inmobiliaria.Controllers
             try
             {
                 var garantes = await _context.Garantes.ToListAsync();
+
+                if (garantes == null || garantes.Count == 0)
+                {
+                    return NotFound(new { statusCode = StatusCodes.Status200OK, message = "No hay garantes disponibles." });
+                }
+
                 return Ok(garantes);
             }
             catch (Exception ex)

@@ -66,6 +66,12 @@ namespace Inmobiliaria.Controllers
                         c.fecha_alta
                     })
                     .OrderByDescending(p => p.id_contrato).ToListAsync();
+
+                if (contratos == null || contratos.Count == 0)
+                {
+                    return NotFound(new { statusCode = StatusCodes.Status200OK, message = "No hay contratos disponibles." });
+                }
+
                 return Ok(contratos);
             }
             catch (Exception ex)
